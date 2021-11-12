@@ -5,27 +5,27 @@ import pandas as pd
 from rank_bm25 import *
 
 ######    
-    
 
-def getval(inp):
-    actors=pd.read_csv('actors.csv').set_index('nconst')
+actors = pd.read_csv('actors.csv').set_index('nconst')
+docList = []
 
+def preprocess_corpus():
     import glob
     # All files ending with .txt
     fileList = glob.glob("actorFile/*.txt")
 
-    docList = []
     for fl in fileList:
         with open(fl, 'r') as file:
             data = file.read().replace('\n', '')
-            #data = spl_chars_removal(data)
-            #data = stopwprds_removal_gensim_custom(data)
         docList.append(data)
 
     tokenized_corpus = [doc.split(" ") for doc in docList]
-    #tokenized_corpus = docList.split(" ")
-    bm25 = BM25Okapi(tokenized_corpus)
 
+    global bm25 
+    bm25 = BM25Okapi(tokenized_corpus)
+    
+
+def getval(inp):
     query = inp ## Enter search query
     tokenized_query = query.split(" ")
 
@@ -46,7 +46,6 @@ def getval(inp):
         movies = i_Loc_df['knownForTitles']
         movs = []
         movLink = []
-        #movs = ''
         for m in movies.split(','):
             fl_2 = 'movieFile/'+m+'.txt'
             with open(fl_2, 'r') as file:
@@ -55,9 +54,7 @@ def getval(inp):
             movs.append(data)
             movLink.append('https://www.imdb.com/title/'+m+'/plotsummary')
         movLinks.append(movLink)
-            #movs = movs + data
         movieOut.append(movs)
-        
     
     dfl=pd.DataFrame()
     dfl['actorOut']=actorOut
@@ -66,7 +63,6 @@ def getval(inp):
     dfl['movLink']=movLinks
     dfl['query']=query
     out=dfl.values.tolist()
-    
     
     return out
     
@@ -96,4 +92,5 @@ def index():
 
 
 if __name__ == '__main__':
+    preprocess_corpus()
     app.run(host="0.0.0.0", port=80)
