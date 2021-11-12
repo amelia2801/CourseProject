@@ -10,22 +10,22 @@ from nltk.corpus import stopwords
 ######    
 
 actors = pd.read_csv('actors.csv').set_index('nconst')
-docList = []
+doc_list = []
 
 def preprocess_corpus():
     import glob
     # All files ending with .txt
-    fileList = glob.glob("actorFile/*.txt")
+    file_list = glob.glob("actorFile/*.txt")
 
-    for fl in fileList:
+    for fl in file_list:
         with open(fl, 'r') as file:
             data = file.read().replace('\n', '')
-        docList.append(data)
+        doc_list.append(data)
 
     stop_words = set(stopwords.words('english'))
 
     tokenized_corpus = []
-    for doc in docList:
+    for doc in doc_list:
         words = doc.split(" ")
         filtered = [w for w in words if not w.lower() in stop_words]
         tokenized_corpus.append(filtered)
@@ -38,15 +38,15 @@ def getval(inp):
     query = inp ## Enter search query
     tokenized_query = query.split(" ")
 
-    rankedDocs = bm25.get_top_n(tokenized_query, docList, n=5)
+    ranked_docs = bm25.get_top_n(tokenized_query, doc_list, n=5)
 
     actorOut = []
     actorLink = []
     movieOut = []
     movLinks = []
-    for i in rankedDocs:
+    for i in ranked_docs:
         nmLoc = i.find(': ')
-        i_Val=i[0:nmLoc]
+        i_Val = i[0:nmLoc]
         i_Loc = actors.index.get_loc(i_Val)
         i_Loc_df = actors.iloc[i_Loc]
         actor = i_Loc_df['primaryName']
@@ -56,22 +56,22 @@ def getval(inp):
         movs = []
         movLink = []
         for m in movies.split(','):
-            fl_2 = 'movieFile/'+m+'.txt'
+            fl_2 = 'movieFile/' + m +'.txt'
             with open(fl_2, 'r') as file:
                 data = file.read() #.replace('\n \n', '')
                 data = data[1:800] + '\n' + ' ' + '\n'
             movs.append(data)
-            movLink.append('https://www.imdb.com/title/'+m+'/plotsummary')
+            movLink.append('https://www.imdb.com/title/' + m + '/plotsummary')
         movLinks.append(movLink)
         movieOut.append(movs)
     
-    dfl=pd.DataFrame()
-    dfl['actorOut']=actorOut
-    dfl['movieOut']=movieOut
-    dfl['actorLink']=actorLink
-    dfl['movLink']=movLinks
-    dfl['query']=query
-    out=dfl.values.tolist()
+    dfl = pd.DataFrame()
+    dfl['actorOut'] = actorOut
+    dfl['movieOut'] = movieOut
+    dfl['actorLink'] = actorLink
+    dfl['movLink'] = movLinks
+    dfl['query'] = query
+    out = dfl.values.tolist()
     
     return out
     
