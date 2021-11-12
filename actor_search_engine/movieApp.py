@@ -1,23 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
-from requests import get
-from requests.exceptions import RequestException
-from contextlib import closing
-from bs4 import BeautifulSoup
-import numpy as np
-from selenium import webdriver
-import pandas as pd
-from selenium.webdriver.chrome.options import Options
-chrome_options = Options()
-chrome_options.add_argument('--headless')
-chrome_options.add_argument('--no-sandbox')
-chrome_options.add_argument('--disable-dev-shm-usage')
-driverLoc="/Users/apillai2/000_CS410_PROJECT/"
 
 import pandas as pd
 from rank_bm25 import *
-import re
-
 
 ######    
     
@@ -95,15 +80,7 @@ def getval(inp):
 
 # In[ ]:
 
-
-import os
-import requests
-import operator
-import re
-import nltk
 from flask import Flask, render_template, request
-from collections import Counter
-
 
 app = Flask(__name__)
 
