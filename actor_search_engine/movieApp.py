@@ -3,6 +3,9 @@
 
 import pandas as pd
 from rank_bm25 import *
+import nltk
+nltk.download('stopwords')
+from nltk.corpus import stopwords
 
 ######    
 
@@ -19,11 +22,17 @@ def preprocess_corpus():
             data = file.read().replace('\n', '')
         docList.append(data)
 
-    tokenized_corpus = [doc.split(" ") for doc in docList]
+    stop_words = set(stopwords.words('english'))
+
+    tokenized_corpus = []
+    for doc in docList:
+        words = doc.split(" ")
+        filtered = [w for w in words if not w.lower() in stop_words]
+        tokenized_corpus.append(filtered)
 
     global bm25 
     bm25 = BM25Okapi(tokenized_corpus)
-    
+
 
 def getval(inp):
     query = inp ## Enter search query
