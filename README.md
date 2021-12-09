@@ -1,5 +1,15 @@
 # Custom Search Engine User Interface
 
+- Click on following link
+- Enter text to search. Eg : "Time Travel"
+
+http://54.176.35.246:8080/
+
+# Software Usage Tutorial Presentation:
+https://drive.google.com/file/d/1P6hGsJ0Lwrk1OmJexMmp0VXBKdpC-GhF/view?usp=sharing
+
+# Custom Search Engine User Interface
+
 http://54.176.35.246:8080/
 
 # Execute web server Locally (Mac OS)
