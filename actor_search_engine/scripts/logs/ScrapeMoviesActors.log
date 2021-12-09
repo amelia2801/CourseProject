@@ -1,0 +1,89 @@
+Actor Count before Filter: 100
+100
+33
+a
+33
+33 0
+-------------------- Scraping movie url 1/33 --------------------
+https://www.imdb.com/title/tt0074802/plotsummary
+-------------------- Scraping movie url 2/33 --------------------
+https://www.imdb.com/title/tt0077621/plotsummary
+SKIPPING
+-------------------- Scraping movie url 3/33 --------------------
+https://www.imdb.com/title/tt0077975/plotsummary
+-------------------- Scraping movie url 4/33 --------------------
+https://www.imdb.com/title/tt0078723/plotsummary
+-------------------- Scraping movie url 5/33 --------------------
+https://www.imdb.com/title/tt0080455/plotsummary
+-------------------- Scraping movie url 6/33 --------------------
+https://www.imdb.com/title/tt0082200/plotsummary
+-------------------- Scraping movie url 7/33 --------------------
+https://www.imdb.com/title/tt0082801/plotsummary
+-------------------- Scraping movie url 8/33 --------------------
+https://www.imdb.com/title/tt0093206/plotsummary
+SKIPPING
+-------------------- Scraping movie url 9/33 --------------------
+https://www.imdb.com/title/tt0097136/plotsummary
+SKIPPING
+-------------------- Scraping movie url 10/33 --------------------
+https://www.imdb.com/title/tt0099902/plotsummary
+SKIPPING
+-------------------- Scraping movie url 11/33 --------------------
+https://www.imdb.com/title/tt0101268/plotsummary
+SKIPPING
+-------------------- Scraping movie url 12/33 --------------------
+https://www.imdb.com/title/tt0101640/plotsummary
+-------------------- Scraping movie url 13/33 --------------------
+https://www.imdb.com/title/tt0101783/plotsummary
+SKIPPING
+-------------------- Scraping movie url 14/33 --------------------
+https://www.imdb.com/title/tt0104009/plotsummary
+-------------------- Scraping movie url 15/33 --------------------
+https://www.imdb.com/title/tt0104567/plotsummary
+SKIPPING
+-------------------- Scraping movie url 16/33 --------------------
+https://www.imdb.com/title/tt0105197/plotsummary
+SKIPPING
+-------------------- Scraping movie url 17/33 --------------------
+https://www.imdb.com/title/tt0105265/plotsummary
+-------------------- Scraping movie url 18/33 --------------------
+https://www.imdb.com/title/tt0106332/plotsummary
+-------------------- Scraping movie url 19/33 --------------------
+https://www.imdb.com/title/tt0107302/plotsummary
+-------------------- Scraping movie url 20/33 --------------------
+https://www.imdb.com/title/tt0108289/plotsummary
+SKIPPING
+-------------------- Scraping movie url 21/33 --------------------
+https://www.imdb.com/title/tt0110081/plotsummary
+-------------------- Scraping movie url 22/33 --------------------
+https://www.imdb.com/title/tt0115012/plotsummary
+SKIPPING
+-------------------- Scraping movie url 23/33 --------------------
+https://www.imdb.com/title/tt0118851/plotsummary
+SKIPPING
+-------------------- Scraping movie url 24/33 --------------------
+https://www.imdb.com/title/tt0162866/plotsummary
+SKIPPING
+-------------------- Scraping movie url 25/33 --------------------
+https://www.imdb.com/title/tt0212712/plotsummary
+SKIPPING
+-------------------- Scraping movie url 26/33 --------------------
+https://www.imdb.com/title/tt0343663/plotsummary
+-------------------- Scraping movie url 27/33 --------------------
+https://www.imdb.com/title/tt0367959/plotsummary
+-------------------- Scraping movie url 28/33 --------------------
+https://www.imdb.com/title/tt0430357/plotsummary
+-------------------- Scraping movie url 29/33 --------------------
+https://www.imdb.com/title/tt0473444/plotsummary
+-------------------- Scraping movie url 30/33 --------------------
+https://www.imdb.com/title/tt1092634/plotsummary
+-------------------- Scraping movie url 31/33 --------------------
+https://www.imdb.com/title/tt3125472/plotsummary
+SKIPPING
+-------------------- Scraping movie url 32/33 --------------------
+https://www.imdb.com/title/tt4566758/plotsummary
+-------------------- Scraping movie url 33/33 --------------------
+https://www.imdb.com/title/tt4591310/plotsummary
+100
+62
+62

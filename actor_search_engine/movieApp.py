@@ -1,91 +1,107 @@
 #!/usr/bin/env python
 # coding: utf-8
-
+from requests import get
+from requests.exceptions import RequestException
+import numpy as np
 import pandas as pd
-from rank_bm25 import *
-import nltk
-nltk.download('stopwords')
-from nltk.corpus import stopwords
+import glob
+import re
+import math
+import sys
+import time
+import metapy
+import pytoml
+import gc
 
-######    
 
-actors = pd.read_csv('actors.csv').set_index('nconst')
-doc_list = []
+import os
+import requests
+import operator
+from flask import Flask, render_template, request
+from collections import Counter
+from datetime import datetime
 
 def preprocess_corpus():
-    import glob
-    # All files ending with .txt
-    file_list = glob.glob("actorFile/*.txt")
+    cfg = 'config.toml'
+    print('Building or loading index...')
+    idx = metapy.index.make_inverted_index(cfg)
+    return idx
 
-    for fl in file_list:
-        with open(fl, 'r') as file:
-            data = file.read().replace('\n', '')
-        doc_list.append(data)
+def getActor(df):
+    corpusList=pd.read_csv('files/corpusList.csv')
+    df = df.merge(corpusList,how='inner')
+    df_actor=pd.read_csv('files/actors.csv')
+    df_actor =  df_actor.merge(df,how='inner')
+    df_actor = df_actor[df_actor.doc_scores > 1]
+    df_actor = df_actor.sort_values('doc_scores',ascending=False)
 
-    stop_words = set(stopwords.words('english'))
+    df_actor['cum_rank'] = df_actor.groupby('nconst')['doc_scores'].rank("dense", ascending=False)
+    df_actor = df_actor[df_actor.cum_rank <= 4]
+    df_actor['cum_score'] = df_actor.groupby('nconst')['doc_scores'].transform("sum")
+    df_actor = df_actor.sort_values(['cum_score','doc_scores'],ascending=False)
+    df_actor = df_actor[:50].reset_index()
 
-    tokenized_corpus = []
-    for doc in doc_list:
-        words = doc.split(" ")
-        filtered = [w for w in words if not w.lower() in stop_words]
-        tokenized_corpus.append(filtered)
+    df_actor['movLink'] = 'https://www.imdb.com/title/'+df_actor['tconst']+'/plotsummary'
+    df_actor['actorLink'] = 'https://www.imdb.com/name/'+df_actor['nconst']
+    df_actor = df_actor[['nconst','primaryName','mov_text','actorLink','movLink','cum_score']]
 
-    global bm25 
-    bm25 = BM25Okapi(tokenized_corpus)
+    df_actor_mov = df_actor.groupby(['nconst'])['movLink'].apply(list).reset_index()
+    df_actor = df_actor.groupby(['nconst','primaryName','cum_score','actorLink'])['mov_text'].apply(list).reset_index()
+
+    if len(df_actor) > 0:
+        df_actor = df_actor.merge(df_actor_mov,how='inner')
+        df_actor = df_actor.sort_values('cum_score',ascending=False).reset_index(drop=True)
+        df_actor = df_actor[['primaryName','mov_text','actorLink','movLink']][:12]
+    else:
+        df_actor = pd.DataFrame([['No Results Found','','https://www.imdb.com/','']])
+
+    del corpusList
+    gc.collect()
+
+    return df_actor
 
 
 def getval(inp):
-    query = inp ## Enter search query
-    tokenized_query = query.split(" ")
 
-    ranked_docs = bm25.get_top_n(tokenized_query, doc_list, n=5)
+    print('Running queries',inp)
+    logTxt = datetime.now().strftime("%Y%m%d %H:%M:%S")+" : "+inp+"\n"
+    with open("logs/queries.txt", "a") as file_object:
+        file_object.write(logTxt)
 
-    actorOut = []
-    actorLink = []
-    movieOut = []
-    movLinks = []
-    for i in ranked_docs:
-        nmLoc = i.find(': ')
-        i_Val = i[0:nmLoc]
-        i_Loc = actors.index.get_loc(i_Val)
-        i_Loc_df = actors.iloc[i_Loc]
-        actor = i_Loc_df['primaryName']
-        actorOut.append(actor)
-        actorLink.append('https://www.imdb.com/name/'+i_Val)
-        movies = i_Loc_df['knownForTitles']
-        movs = []
-        movLink = []
-        for m in movies.split(','):
-            fl_2 = 'movieFile/' + m +'.txt'
-            with open(fl_2, 'r') as file:
-                data = file.read() #.replace('\n \n', '')
-                data = data[1:800] + '\n' + ' ' + '\n'
-            movs.append(data)
-            movLink.append('https://www.imdb.com/title/' + m + '/plotsummary')
-        movLinks.append(movLink)
-        movieOut.append(movs)
-    
-    dfl = pd.DataFrame()
-    dfl['actorOut'] = actorOut
-    dfl['movieOut'] = movieOut
-    dfl['actorLink'] = actorLink
-    dfl['movLink'] = movLinks
-    dfl['query'] = query
-    out = dfl.values.tolist()
+    query = metapy.index.Document()
+    query.content(inp.strip())
+
+    ranker = metapy.index.OkapiBM25(k1=1.2,b=0.75,k3=500)
+
+    idx = preprocess_corpus()
+    results = ranker.score(idx, query, 100)
+    del idx
+    gc.collect()
+
+    docList_df=pd.read_csv('files/docList_df.csv')
+    docList = docList_df['tconst'].to_list()
+
+    score_out = []
+    for num,(d_id, score) in enumerate(results):
+        t_id = docList[d_id]
+        score_out.append([t_id,score])
+
+    if len(score_out) == 0:
+        score_out = [['t0',0]]
+
+    df = pd.DataFrame(score_out)
+    df.columns=['tconst','doc_scores']
+    df_actor = getActor(df)
+
+    df_actor['query']=inp
+
+    out=df_actor.values.tolist()
+
+    del df_actor,df,docList_df
+    gc.collect()
     
     return out
     
-
-
-# In[4]:
-
-
-##getOCRAval('https://www.coursera.org/search?query=java&%5Bpage%5D=2&')
-
-
-# In[ ]:
-
-from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
@@ -101,5 +117,4 @@ def index():
 
 
 if __name__ == '__main__':
-    preprocess_corpus()
-    app.run(host="0.0.0.0", port=80)
+    app.run(host="0.0.0.0", port=8080, threaded=False)
